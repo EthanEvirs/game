@@ -11,7 +11,10 @@ class Camera:
     def __init__(self):
         self.x = 0
         self.y = 0
-        self.zoom_factor = 50
+        self.zoom_factor = 600
+
+    def zoom(self, zoom_factor):
+        self.zoom_factor = zoom_factor
 
 
 camera = Camera()
@@ -32,16 +35,20 @@ up_down_frames = [
     pygame.Rect(100, 0, 26, 14),
 ]
 
-up_down_frame_index = 0
 frame_index = 0
-
 
 pygame.init()
 window_size = (1024, 768)
 
-player_x = 0
-player_y = 0
-player_speed = 0.25
+player_x = 2770
+player_y = 650
+player_speed = 0.5
+
+player_x -= player_speed * camera.zoom_factor
+player_y -= player_speed * camera.zoom_factor
+
+player_speed = 0.15
+
 
 fps = 60
 elasped_time = 0
@@ -72,24 +79,45 @@ while run:
         frame_index = frame_index % len(frames)
         player_x += player_speed
     if keys[pygame.K_UP]:
-        up_down_frame_index = up_down_frame_index - 0.05
-        up_down_frame_index = up_down_frame_index % len(up_down_frames)
+        frame_index = frame_index - 0.05
+        frame_index = frame_index % len(frames)
         player_y -= player_speed
     if keys[pygame.K_DOWN]:
-        up_down_frame_index = up_down_frame_index + 0.05
-        up_down_frame_index = up_down_frame_index % len(up_down_frames)
+        frame_index = frame_index + 0.05
+        frame_index = frame_index % len(frames)
         player_y += player_speed
+    if camera.zoom_factor == 0:
+        camera.zoom_factor = 1
+        camera.x = (player_x / camera.zoom_factor) - (window_size[0] // 2)
+    if keys[pygame.K_PLUS]:
+        camera.zoom(camera.zoom_factor + 1)
+    if camera.zoom_factor < 1:
+        camera.zoom_factor = 1
+    camera.x = (player_x / camera.zoom_factor) - (window_size[0] // 2)
+    camera.y = (player_y / camera.zoom_factor) - (window_size[1] // 2)
+    if keys[pygame.K_MINUS]:
+        camera.zoom(camera.zoom_factor - 1)
+    if camera.zoom_factor < 1:
+        camera.zoom_factor = 1
+    camera.x = (player_x / camera.zoom_factor) - (window_size[0] // 2)
+    camera.y = (player_y / camera.zoom_factor) - (window_size[1] // 2)
 
     camera.x = player_x - (window_size[0] // 2)
     camera.y = player_y - (window_size[1] // 2)
 
     screen.fill(BG_COLOR)
     screen.blit(background_image, background_rect.move(-camera.x, -camera.y))
+    draw_x = player_x - camera.x
+    draw_y = player_y - camera.y
+    draw_width = frames[int(frame_index)].width * camera.zoom_factor
+    draw_height = frames[int(frame_index)].height * camera.zoom_factor
+
     screen.blit(
         sprite_sheet,
-        (player_x - camera.x, player_y - camera.y),
+        (draw_x, draw_y, draw_width, draw_height),
         frames[int(frame_index)],
     )
+
     pygame.display.flip()
 
 pygame.quit()
