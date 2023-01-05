@@ -113,40 +113,56 @@ while run:
     if event.type == pygame.KEYDOWN:
         if event.key == pygame.K_UP:
             action = 4  # change this value to the desired action
+            frame += 0
+        if frame >= len(animation_list[action]):
             frame = 0
         elif event.key == pygame.K_DOWN:
             action = 0  # change this value to the desired action
+            frame += 0
+        if frame >= len(animation_list[action]):
             frame = 0
         elif event.key == pygame.K_LEFT:
             action = 2
+            frame += 0
+        if frame >= len(animation_list[action]):
             frame = 0
         elif event.key == pygame.K_RIGHT:
             action = 6
+            frame += 0
+        if frame >= len(animation_list[action]):
             frame = 0
     if (
         pygame.key.get_pressed()[pygame.K_UP]
         and pygame.key.get_pressed()[pygame.K_RIGHT]
     ):
         action = 5
-        frame = 0
+        frame += 0
+        if frame >= len(animation_list[action]):
+            frame = 0
     if (
         pygame.key.get_pressed()[pygame.K_UP]
         and pygame.key.get_pressed()[pygame.K_LEFT]
     ):
         action = 3
-        frame = 0
+        frame += 0
+        if frame >= len(animation_list[action]):
+            frame = 0
     if (
         pygame.key.get_pressed()[pygame.K_DOWN]
         and pygame.key.get_pressed()[pygame.K_LEFT]
     ):
         action = 1
-        frame = 0
+        frame += 0
+        if frame >= len(animation_list[action]):
+            frame = 0
     if (
         pygame.key.get_pressed()[pygame.K_DOWN]
         and pygame.key.get_pressed()[pygame.K_RIGHT]
     ):
         action = 7
-        frame = 0
+        frame += 0
+        if frame >= len(animation_list[action]):
+            frame = 0
 
     pygame.display.update()
 
