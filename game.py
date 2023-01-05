@@ -13,15 +13,23 @@ class Camera:
         self.y = 0
         self.zoom_factor = 600
 
-    def zoom(self, zoom_factor):
-        self.zoom_factor = zoom_factor
-
 
 camera = Camera()
 
 sprite_sheet = pygame.image.load("player.png")
 colorkey = (42, 83, 209)
 sprite_sheet.set_colorkey(colorkey)
+
+
+def get_image(sheet, width, height):
+    image = pygame.Surface((width, height))
+    image.blit(sheet, (0, 0))
+
+    return image
+
+
+frame_0 = get_image(sprite_sheet, 0, 0)
+
 
 frames = [
     pygame.Rect(0, 0, 16, 24),  # frame1
@@ -37,8 +45,11 @@ up_down_frames = [
 
 frame_index = 0
 
+# Screen size
 pygame.init()
-window_size = (1024, 768)
+screen_width = 1024
+screen_height = 786
+window_size = (screen_width, screen_height)
 
 player_x = 2770
 player_y = 650
@@ -53,11 +64,10 @@ player_speed = 0.15
 fps = 60
 elasped_time = 0
 
-
 background_image = pygame.image.load("background.png")
 background_rect = background_image.get_rect()
 
-screen = pygame.display.set_mode(window_size)
+screen = pygame.display.set_mode((screen_width, screen_height))
 pygame.display.set_caption("Movement test")
 
 BG_COLOR = (50, 50, 50)
@@ -86,31 +96,23 @@ while run:
         frame_index = frame_index + 0.05
         frame_index = frame_index % len(frames)
         player_y += player_speed
-    if camera.zoom_factor == 0:
-        camera.zoom_factor = 1
-        camera.x = (player_x / camera.zoom_factor) - (window_size[0] // 2)
-    if keys[pygame.K_PLUS]:
-        camera.zoom(camera.zoom_factor + 1)
-    if camera.zoom_factor < 1:
-        camera.zoom_factor = 1
-    camera.x = (player_x / camera.zoom_factor) - (window_size[0] // 2)
-    camera.y = (player_y / camera.zoom_factor) - (window_size[1] // 2)
-    if keys[pygame.K_MINUS]:
-        camera.zoom(camera.zoom_factor - 1)
-    if camera.zoom_factor < 1:
-        camera.zoom_factor = 1
-    camera.x = (player_x / camera.zoom_factor) - (window_size[0] // 2)
-    camera.y = (player_y / camera.zoom_factor) - (window_size[1] // 2)
 
     camera.x = player_x - (window_size[0] // 2)
     camera.y = player_y - (window_size[1] // 2)
 
+    # update background
     screen.fill(BG_COLOR)
+    # display image
     screen.blit(background_image, background_rect.move(-camera.x, -camera.y))
     draw_x = player_x - camera.x
     draw_y = player_y - camera.y
     draw_width = frames[int(frame_index)].width * camera.zoom_factor
     draw_height = frames[int(frame_index)].height * camera.zoom_factor
+
+    # sprite sheet
+    screen.blit(sprite_sheet, (0, 0))
+    # show frame image
+    screen.blit(frame_0, (17, 0))
 
     screen.blit(
         sprite_sheet,
