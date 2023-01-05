@@ -44,17 +44,27 @@ LIGHTBLUE = (42, 83, 209)
 
 # create animation list
 animation_list = []
-animation_steps = [2, 4, 2, 2, 2, 2, 2, 2, 2, 1]
+animation_steps = [
+    2,
+    2,
+    2,
+    2,
+    3,
+    2,
+    2,
+    2,
+    2,
+]
 action = 0
 last_update = pygame.time.get_ticks()
-animation_cooldown = 400
+animation_cooldown = 250
 frame = 0
 step_counter = 0
 
 for animation in animation_steps:
     temp_img_list = []
     for _ in range(animation):
-        temp_img_list.append(sprite_sheet.get_image(step_counter, 17, 24, 1, LIGHTBLUE))
+        temp_img_list.append(sprite_sheet.get_image(step_counter, 17, 24, 5, LIGHTBLUE))
         step_counter += 1
     animation_list.append(temp_img_list)
 
@@ -101,12 +111,17 @@ while run:
     camera.y = player_y - (WINDOW_SIZE[1] // 2)
 
     if event.type == pygame.KEYDOWN:
-        if event.key == pygame.K_DOWN and action > 0:
-            action -= 1
+        if event.key == pygame.K_UP:
+            action = 4  # change this value to the desired action
             frame = 0
-    if event.type == pygame.KEYUP:
-        if event.key == pygame.K_DOWN and action > len(animation_list) - 1:
-            action += 1
+        elif event.key == pygame.K_DOWN:
+            action = 0  # change this value to the desired action
+            frame = 0
+        elif event.key == pygame.K_LEFT:
+            action = 2
+            frame = 0
+        elif event.key == pygame.K_RIGHT:
+            action = 6
             frame = 0
 
     pygame.display.update()
